@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="fpss/fpss.vcxproj" Id="b8a2c869-26c1-4a58-a46b-64cc228cefb9" />
+</Solution>
