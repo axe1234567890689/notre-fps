@@ -161,6 +161,7 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char d
 
 Camera* getCam();
 
+sfVector3f mulV3f(sfVector3f _v1, float _multi);
 sfVector3f addVec3(sfVector3f _a, sfVector3f _b);
 
 void object3D_destroy(Object3D* _object);

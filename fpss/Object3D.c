@@ -333,6 +333,10 @@ sfVector3f addVec3(sfVector3f _a, sfVector3f _b) {
     return (sfVector3f) { _a.x + _b.x, _a.y + _b.y, _a.z + _b.z };
 }
 
+sfVector3f subVec3(sfVector3f _a, sfVector3f _b) {
+    return (sfVector3f) { _a.x - _b.x, _a.y - _b.y, _a.z - _b.z };
+}
+
 void object3D_destroy(Object3D* _object)
 {
 }
@@ -662,15 +666,17 @@ void object3D_init()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
+    glPointSize(50.f);
+
     glClearColor(0.2f, 0.2f, 0.25f, 1.f);
 
     shaderBasic = sfShader_createFromFile("..\\Ressource\\Basic\\ambient.vert", NULL, "..\\Ressource\\Basic\\vert.frag");
     shaderIDBasic = sfShader_getNativeHandle(shaderBasic);
 
 #if DEBUG & 1
-    viewCollisions = creatNewObject(0, 0, 0, 0, GL_LINE_STRIP, 0, shaderIDBasic, 0);
+    viewCollisions = creatNewObject(0, 0, 0, 0, GL_POINTS, 0, shaderIDBasic, 0);
 
-    viewCollisions->nbVertex = 17;
+    viewCollisions->nbVertex = 1;
     viewCollisions->mesh = calloc(viewCollisions->nbVertex, sizeof(Vertex));
 
     creatMesh(viewCollisions, 0);
@@ -724,18 +730,32 @@ char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face, fl
     float denominateur = DOT(_move, _face->normal);
     if (denominateur >= 0.) return 0;
     sfVector3f posAO = (sfVector3f){ _face->points[0].x - _from.x, _face->points[0].y - _from.y, _face->points[0].z - _from.z };
-    float t = DOT(posAO, _face->normal) / denominateur;
-    if (t > 1.) return 0;
+    *_t = DOT(posAO, _face->normal) / denominateur;
+    return (*_t <= 1.);
+}
 
-    return 1;
+sfVector3f mulV3f(sfVector3f _v1, float _multi) {
+    return (sfVector3f) { _v1.x* _multi, _v1.y* _multi, _v1.z* _multi };
+}
+
+float lerp(float _a, float _b, float t) {
+    return (_b - _a) * t + _a;
+}
+
+sfVector3f lerpV3f(sfVector3f _v1, sfVector3f _v2, float t) {
+    return (sfVector3f) { lerp(_v1.x, _v2.x, t), lerp(_v1.y, _v2.y, t), lerp(_v1.z, _v2.z, t)};
 }
 
 sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char depth)
 {
+    if (depth == 5) return _from;
+
     CollideMesh* colliderTouch = NULL;
     CollideFace* faceTouch = NULL;
     Object3D* current = firstObject3D;
     sfVector3f to = addVec3(_from, _move);
+    float closestT = 1.;
+    float t;
     while (current != NULL) {
         if (current->collider) {
             if (vecInBoundingBox(_from, to, &current->collider->box)) {
@@ -743,10 +763,11 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char d
 
                 for (int i = 0; i < colliderTouch->nbFace; i++) {
                     if (vecInBoundingBox(_from, to, &colliderTouch->faces[i].box)) {
-                        float t;
                         if (segmentCollision(_from, _move, &colliderTouch->faces[i], &t)) {
-                            to = _from;
-                            faceTouch = &colliderTouch->faces[i];
+                            if (closestT > t) {
+                                faceTouch = &colliderTouch->faces[i];
+                                closestT = t;
+                            }
                         }
                     }
                 }
@@ -756,35 +777,25 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char d
         current = current->next;
     }
 
-#ifdef DEBUG
-
     if (faceTouch) {
-        sfVector3f startPos = (sfVector3f){ faceTouch->box.minX, faceTouch->box.minY, faceTouch->box.minZ };
-        sfVector3f endPos = (sfVector3f){ faceTouch->box.minX + faceTouch->box.sizeX, faceTouch->box.minY + faceTouch->box.sizeY, faceTouch->box.minZ + faceTouch->box.sizeZ };
+        sfVector3f _newFrom, _newMove;
+        _newFrom = lerpV3f(_from, addVec3(_from, _move), closestT);
+        _newMove = mulV3f(_move, 1. - closestT);
 
-        viewCollisions->mesh[0].pos = (sfVector3f){ startPos.x, startPos.y, startPos.z };
-        viewCollisions->mesh[1].pos = (sfVector3f){ startPos.x, endPos.y, startPos.z };
-        viewCollisions->mesh[2].pos = (sfVector3f){ endPos.x, endPos.y, startPos.z };
-        viewCollisions->mesh[3].pos = (sfVector3f){ endPos.x, startPos.y, startPos.z };
-        viewCollisions->mesh[4].pos = (sfVector3f){ endPos.x, endPos.y, startPos.z };
-        viewCollisions->mesh[5].pos = (sfVector3f){ endPos.x, endPos.y, endPos.z };
-        viewCollisions->mesh[6].pos = (sfVector3f){ endPos.x, startPos.y, endPos.z };
-        viewCollisions->mesh[7].pos = (sfVector3f){ endPos.x, endPos.y, endPos.z };
-        viewCollisions->mesh[8].pos = (sfVector3f){ startPos.x, endPos.y, endPos.z };
-        viewCollisions->mesh[9].pos = (sfVector3f){ startPos.x, startPos.y, endPos.z };
-        viewCollisions->mesh[10].pos = (sfVector3f){ startPos.x, endPos.y, endPos.z };
-        viewCollisions->mesh[11].pos = (sfVector3f){ startPos.x, endPos.y, startPos.z };
-        viewCollisions->mesh[12].pos = (sfVector3f){ startPos.x, startPos.y, startPos.z };
-        viewCollisions->mesh[13].pos = (sfVector3f){ endPos.x, startPos.y, startPos.z };
-        viewCollisions->mesh[14].pos = (sfVector3f){ endPos.x, startPos.y, endPos.z };
-        viewCollisions->mesh[15].pos = (sfVector3f){ startPos.x, startPos.y, endPos.z };
-        viewCollisions->mesh[16].pos = (sfVector3f){ startPos.x, startPos.y, startPos.z };
+#if DEBUG
 
+        viewCollisions->mesh[0].pos = _newFrom;
         updateMesh(viewCollisions);
-    }
+
 #endif // DEBUG
 
-    return to;
+        sfVector3f perpendicular = mulV3f(faceTouch->normal, DOT(_move, faceTouch->normal));
+        _newMove = subVec3(_newMove, perpendicular);
+
+        return getMouveVecCollid(_newFrom, _newMove, depth + 1);
+    }
+
+    return addVec3(_from, _move);
 }
 
 Camera* getCam()

@@ -18,7 +18,7 @@ void Level1_init(Scene* _scene)
 
     const unsigned int nbCarer = 10;
 
-    data->testModel = loadModel("..\\Ressource\\Level1 - tktJe c pas\\models\\suzanne.data", GL_TRIANGLES, 20., shaderIDAT, 0, 2);
+    data->testModel = loadModel("..\\Ressource\\Level1 - tktJe c pas\\models\\suzanne.data", GL_TRIANGLES, 2., shaderIDAT, 0, 2);
 }
 
 void Level1_update(Scene* _scene, float _dt)

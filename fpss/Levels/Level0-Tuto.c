@@ -80,13 +80,13 @@ void Tuto_init(Scene* _scene)
         LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y;
     }
 
-    for (i = 0; i < LevelFloor->nbFaces; i += 3) {
+    for (i = 0; i < LevelFloor->nbVertex; i += 3) {
         LevelFloor->mesh[i].norm = computeNormal(LevelFloor->mesh[i].pos, LevelFloor->mesh[i + 1].pos, LevelFloor->mesh[i + 2].pos);
         LevelFloor->mesh[i + 1].norm = LevelFloor->mesh[i].norm;
         LevelFloor->mesh[i + 2].norm = LevelFloor->mesh[i].norm;
     }
 
-    creatMesh(LevelFloor, 2);
+    creatMesh(LevelFloor, 1);
 
     data->LevelDoor = creatNewObject(0, 0, 0, 6, GL_TRIANGLES, textureID, shaderIDAT, 0);
 
@@ -140,7 +140,7 @@ void Tuto_init(Scene* _scene)
 
     data->LevelDoor->pos = (sfVector3f) { 5., 4.94, 10.5 };
 
-    creatMesh(data->LevelDoor, 2);
+    creatMesh(data->LevelDoor, 1);
 
     data->LevelFloor = LevelFloor;
 

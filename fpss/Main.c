@@ -44,7 +44,7 @@ int main(void)
     float dt;
     sfEvent event;
 
-    Entity* player = createEntity((sfVector3f) { 1., 1., 1. });
+    Entity* player = createEntity((sfVector3f) { 1., 10., 1. });
     player->action = playerAction;
     
     float timer = 5.;
