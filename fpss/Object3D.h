@@ -7,6 +7,10 @@
 
 #include <math.h>
 
+#ifdef _DEBUG
+#define DEBUG 1
+#endif // _DEBUG
+
 #define RAD_TO_DEG (180 / 3.14)
 #define DEG_TO_RAD (3.14 / 180)
 
@@ -88,7 +92,6 @@ typedef struct Face {
 typedef struct Object3D Object3D;
 struct Object3D {
     Object3D* next;
-    Color color;
     GLuint texture;
     sfVector3f* poss;
     sfVector2f* texs;
@@ -133,7 +136,7 @@ void updateCamera(float dt);
 Ligth* createLigth(Color _color, sfVector3f _pos, float _power);
 CollideMesh* creatCollider();
 Object3D* loadModel(const char* _link, GLuint _renderType, float _scale, GLuint _shader, ShaderParam _shaderParam, char _hasTrueCollider);
-Object3D* creatNewObject(Color _color, unsigned int nbPos, unsigned int nbText, unsigned int nbNormals, unsigned int nbFaces, GLuint _renderType, GLuint texture, GLuint _shaderID, ShaderParam _shaderParam);
+Object3D* creatNewObject(unsigned int nbPos, unsigned int nbText, unsigned int nbNormals, unsigned int nbFaces, GLuint _renderType, GLuint texture, GLuint _shaderID, ShaderParam _shaderParam);
 void creatMesh(Object3D* _object, char _hasTrueCollider);
 void setShader(Object3D* _object, GLuint _shaderID, ShaderParam _shaderParam);
 
@@ -154,3 +157,5 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move);
 Camera* getCam();
 
 sfVector3f addVec3(sfVector3f _a, sfVector3f _b);
+
+void object3D_destroy(Object3D* _object);

@@ -16,7 +16,11 @@ uniform struct Ligth ligths[10];
 
 uniform int nbLigth;
 
-uniform sampler2D tex;
+uniform sampler2D texTuto;
+uniform sampler2D texLevel2;
+
+uniform vec2 transiPos;
+uniform float transiDist;
 
 void main()
 {
@@ -29,10 +33,19 @@ void main()
         dist = length(dir);
         dir /= dist;
         diff = max(dot(normalize(Normal), normalize(dir)), 0.) / dist * ligths[i].power;
-        clamp(0., 1., diff);
+        diff = clamp(diff, 0., 1.);
+        diff *= 0.75;
+        diff += 0.25;
 
         color += ligths[i].color * diff;
     }
 
-    FragColor = vec4((color * texture2D(tex, UV)).rgb, 1.);
+    vec2 dir2 = transiPos.xy - pos.xz;
+    dist = length(dir2);
+    float transi = dist - transiDist;// + cos(atan(dir2.y, dir2.x) * 3.) / 3.;
+    if (transi > 0.7)
+    transi = 1.;
+    transi = clamp(transi, 0., 1.);
+
+    FragColor = vec4((color.rgb * (texture2D(texTuto, UV).rgb * transi + texture2D(texLevel2, UV).rgb * (1. - transi))), 1.);
 }

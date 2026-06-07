@@ -1,6 +1,7 @@
 #include "Object3D.h"
 #include "Entity.h"
 #include "Player.h"
+#include "LevelManager.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -33,62 +34,15 @@ int main(void)
 
     object3D_init();
 
+    initScene();
+
+    loadScene(TUTO);
+
     sfClock* clock = sfClock_create();
 
     float cubeAngle = 0.f;
     float dt;
     sfEvent event;
-
-    sfShader* shaderAT = sfShader_createFromFile("..\\Ressource\\Level1 - TUTO\\ambient.vert", NULL, "..\\Ressource\\Level1 - TUTO\\ambientATexture.frag");
-    GLuint shaderIDAT = sfShader_getNativeHandle(shaderAT);
-
-    sfShader_setIntUniform(shaderAT, "nbLigth", 1);
-
-    sfShader_setFloatUniform(shaderAT, "ligths[0].power", 5000000.);
-    sfShader_setVec4Uniform(shaderAT, "ligths[0].color", (sfGlslVec4) { 1., 1., 1., 1. });
-    sfShader_setVec3Uniform(shaderAT, "ligths[0].pos", (sfVector3f) { 0., 10000000., 0. });
-
-    sfTexture* tutoTexture = sfTexture_createFromFile("..\\Ressource\\Level1 - TUTO\\wallTexture.png", NULL);
-    GLuint textureID = sfTexture_getNativeHandle(tutoTexture);
-
-    const unsigned int nbCarer = 10;
-
-    Object3D* LevelFloor = creatNewObject((Color) {1., 1., 1., 1.}, 0, 0, 0, nbCarer * nbCarer * 2, GL_TRIANGLES, textureID, shaderIDAT, 0);
-
-    unsigned int i = 0;
-    for (int x = 0; x < nbCarer; x++) {
-        for (int z = 0; z < nbCarer; z++) {
-            LevelFloor->mesh[i].pos = (sfVector3f){ x, max(x, z), z};
-            LevelFloor->mesh[i + 1].pos = (sfVector3f){ x + 1., max(x, z) + 1., z + 1. };
-            LevelFloor->mesh[i + 2].pos = (sfVector3f){ x + 1., max(x + 1., z), z };
-            LevelFloor->mesh[i + 3].pos = (sfVector3f){ x, max(x, z), z };
-            LevelFloor->mesh[i + 4].pos = (sfVector3f){ x, max(x, z + 1.), z + 1. };
-            LevelFloor->mesh[i + 5].pos = (sfVector3f){ x + 1., max(x, z) + 1., z + 1. };
-
-            LevelFloor->mesh[i].texPos = (sfVector2f){ 0., 0. };
-            LevelFloor->mesh[i + 1].texPos = (sfVector2f){ 1., 1. };
-            LevelFloor->mesh[i + 2].texPos = (sfVector2f){ 1., 0. };
-            LevelFloor->mesh[i + 3].texPos = (sfVector2f){ 0., 0. };
-            LevelFloor->mesh[i + 4].texPos = (sfVector2f){ 0., 1. };
-            LevelFloor->mesh[i + 5].texPos = (sfVector2f){ 1., 1. };
-
-            LevelFloor->mesh[i].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 1].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 2].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 3].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 4].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 5].norm = (sfVector3f){ 0., 1., 0. };
-
-            i += 6;
-        }
-    }
-
-    for (i = 0; i < LevelFloor->nbVertex; i++) {
-        LevelFloor->mesh[i].pos.y /= 4.5;
-        LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y;
-    }
-
-    creatMesh(LevelFloor, 1);
 
     Entity* player = createEntity((sfVector3f) { 1., 1., 1. });
     player->action = playerAction;
@@ -130,6 +84,7 @@ int main(void)
         }
 
         updateAllEntity(dt);
+        updateScenes(dt);
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
