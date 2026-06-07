@@ -1,11 +1,12 @@
 #pragma once
 #include "Object3D.h"
 
-#define NB_SCENE 1
+#define NB_SCENE 2
 
 typedef char SceneType;
 enum SceneType {
 	TUTO,
+	Level1
 };
 
 typedef struct Scene Scene;

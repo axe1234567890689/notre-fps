@@ -271,6 +271,30 @@ Mat4 identity(Object3D* _model) {
     out.m[10] = 1;
     out.m[15] = 1;
 
+    float cx = cosf(_model->pitch);
+    float sx = sinf(_model->pitch);
+
+    float cy = cosf(_model->yaw);
+    float sy = sinf(_model->yaw);
+
+    float cz = cosf(_model->roll);
+    float sz = sinf(_model->roll);
+
+    out.m[5] = cx * cz;
+    out.m[6] = sx;
+
+    out.m[9] = -sx;
+    out.m[10] = cx * cy;
+
+    out.m[0] = cy * cz;
+    out.m[2] = -sy;
+
+    out.m[8] = sy;
+
+    out.m[1] = sz;
+
+    out.m[4] = -sz;
+
     return out;
 }
 
@@ -284,11 +308,24 @@ void object3D_destroy(Object3D* _object)
 
 void updateCollider(Object3D* _object) {
     CollideMesh* collider = _object->collider;
+    Mat4 model = identity(_object);
 
     for (int i = 0; i < collider->nbFace; i++) {
-        collider->faces[i].points[0] = addVec3(_object->mesh[i * 3].pos, _object->pos);
-        collider->faces[i].points[1] = addVec3(_object->mesh[i * 3 + 1].pos, _object->pos);
-        collider->faces[i].points[2] = addVec3(_object->mesh[i * 3 + 2].pos, _object->pos);
+        unsigned int j = i * 3;
+        collider->faces[i].points[0].x = _object->mesh[j].pos.x * model.m[0] + _object->mesh[j].pos.y * model.m[4] + _object->mesh[j].pos.z * model.m[8];
+        collider->faces[i].points[0].y = _object->mesh[j].pos.x * model.m[1] + _object->mesh[j].pos.y * model.m[5] + _object->mesh[j].pos.z * model.m[9];
+        collider->faces[i].points[0].z = _object->mesh[j].pos.x * model.m[2] + _object->mesh[j].pos.y * model.m[6] + _object->mesh[j].pos.z * model.m[10];
+        collider->faces[i].points[0] = addVec3(collider->faces[i].points[0], _object->pos);
+        j++;
+        collider->faces[i].points[1].x = _object->mesh[j].pos.x * model.m[0] + _object->mesh[j].pos.y * model.m[4] + _object->mesh[j].pos.z * model.m[8];
+        collider->faces[i].points[1].y = _object->mesh[j].pos.x * model.m[1] + _object->mesh[j].pos.y * model.m[5] + _object->mesh[j].pos.z * model.m[9];
+        collider->faces[i].points[1].z = _object->mesh[j].pos.x * model.m[2] + _object->mesh[j].pos.y * model.m[6] + _object->mesh[j].pos.z * model.m[10];
+        collider->faces[i].points[1] = addVec3(collider->faces[i].points[1], _object->pos);
+        j++;
+        collider->faces[i].points[2].x = _object->mesh[j].pos.x * model.m[0] + _object->mesh[j].pos.y * model.m[4] + _object->mesh[j].pos.z * model.m[8];
+        collider->faces[i].points[2].y = _object->mesh[j].pos.x * model.m[1] + _object->mesh[j].pos.y * model.m[5] + _object->mesh[j].pos.z * model.m[9];
+        collider->faces[i].points[2].z = _object->mesh[j].pos.x * model.m[2] + _object->mesh[j].pos.y * model.m[6] + _object->mesh[j].pos.z * model.m[10];
+        collider->faces[i].points[2] = addVec3(collider->faces[i].points[2], _object->pos);
 
         collider->faces[i].normal = (sfVector3f){
             _object->mesh[i * 3].norm.x + _object->mesh[i * 3 + 1].norm.x + _object->mesh[i * 3 + 2].norm.x,
@@ -596,7 +633,7 @@ void object3D_init()
 
     glClearColor(0.2f, 0.2f, 0.25f, 1.f);
 
-    shaderBasic = sfShader_createFromFile("..\\Ressource\\Basic\\ambient.vert", NULL, "..\\Ressource\\Basic\\ambient.frag");
+    shaderBasic = sfShader_createFromFile("..\\Ressource\\Basic\\ambient.vert", NULL, "..\\Ressource\\Basic\\vert.frag");
     shaderIDBasic = sfShader_getNativeHandle(shaderBasic);
 
 #if DEBUG & 1
@@ -652,7 +689,17 @@ char vecInBoundingBox(sfVector3f _from, sfVector3f _to, BoundingBox3D* _box) {
         || _from.z > _box->minZ + _box->sizeZ && _to.z > _box->minZ + _box->sizeZ);
 }
 
-sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move)
+char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face, float* _t) {
+    float denominateur = DOT(_move, _face->normal);
+    if (denominateur >= 0.) return 0;
+    sfVector3f posAO = (sfVector3f){ _face->points[0].x - _from.x, _face->points[0].y - _from.y, _face->points[0].z - _from.z };
+    float t = DOT(posAO, _face->normal) / denominateur;
+    if (t > 1.) return 1;
+
+    return 1;
+}
+
+sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char depth)
 {
     CollideMesh* colliderTouch = NULL;
     CollideFace* faceTouch = NULL;
@@ -665,8 +712,11 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move)
 
                 for (int i = 0; i < colliderTouch->nbFace; i++) {
                     if (vecInBoundingBox(_from, to, &colliderTouch->faces[i].box)) {
-
-                        faceTouch = &colliderTouch->faces[i];
+                        float t;
+                        if (segmentCollision(_from, _move, &colliderTouch->faces[i], &t)) {
+                            to = _from;
+                            faceTouch = &colliderTouch->faces[i];
+                        }
                     }
                 }
             }
@@ -701,10 +751,9 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move)
 
         updateMesh(viewCollisions);
     }
+#endif // DEBUG
 
     return to;
-
-#endif // DEBUG
 }
 
 Camera* getCam()

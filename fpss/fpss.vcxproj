@@ -153,16 +153,18 @@
   <ItemGroup>
     <ClCompile Include="Entity.c" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="Level-Tuto.c" />
     <ClCompile Include="LevelManager.c" />
+    <ClCompile Include="Levels\Level0-Tuto.c" />
+    <ClCompile Include="Levels\Level1-Test.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Object3D.c" />
     <ClCompile Include="Player.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="Level-Tuto.h" />
     <ClInclude Include="LevelManager.h" />
+    <ClInclude Include="Levels\Level0-Tuto.h" />
+    <ClInclude Include="Levels\Level1-Test.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>

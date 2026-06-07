@@ -1,5 +1,6 @@
 #include "LevelManager.h"
-#include "Level-Tuto.h"
+#include "Levels/Level0-Tuto.h"
+#include "Levels/Level1-Test.h"
 
 Scene* firstScene = NULL;
 void (*init[NB_SCENE])(Scene* _scene);
@@ -8,6 +9,7 @@ void (*destroy[NB_SCENE])(Scene* _scene);
 
 void initScene() {
 	addSceneType(TUTO, Tuto_init, Tuto_update, Tuto_destroy);
+	addSceneType(Level1, Level1_init, Level1_update, Level1_destroy);
 }
 
 void addSceneType(SceneType _type, void(*_init[NB_SCENE])(Scene* _scene), void(*_update)(Scene* _scene, float _dt), void(*_destroy[NB_SCENE])(Scene* _scene))

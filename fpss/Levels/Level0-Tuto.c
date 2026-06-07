@@ -1,4 +1,4 @@
-#include "Level-Tuto.h"
+#include "Level0-Tuto.h"
 
 void Tuto_init(Scene* _scene)
 {
@@ -134,7 +134,7 @@ void Tuto_init(Scene* _scene)
 
     data->LevelDoor->pos = (sfVector3f) { 5., 4.94, 10.5 };
 
-    creatMesh(data->LevelDoor, 1);
+    creatMesh(data->LevelDoor, 2);
 
     data->LevelFloor = LevelFloor;
 
@@ -146,13 +146,18 @@ void Tuto_update(Scene* _scene, float _dt)
     Tuto_Data* data = _scene->data;
 
     if (data->transi) {
-        data->timer += _dt * 2.;
+        data->timer += _dt * 3.;
 
         sfShader_setFloatUniform(data->shaderAT, "transiDist", data->timer);
-        if (data->timer < 1.) {
-            data->LevelDoor->pos = (sfVector3f){ 5. + data->timer + 1., 4.94, 10.5 };
+        if (data->timer < 1.5) {
+            data->LevelDoor->pos = (sfVector3f){ 5. + data->timer / 1.5 + 1., 4.94, 10.5 };
             updateCollider(data->LevelDoor);
         }
+
+        //data->LevelDoor->yaw = data->timer;
+        //data->LevelDoor->roll = data->timer;
+        //data->LevelFloor->pitch = data->timer;
+        //updateCollider(data->LevelFloor);
     }
     else {
         if (sfKeyboard_isScancodePressed(sfScanF)) {

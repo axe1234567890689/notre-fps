@@ -30,10 +30,13 @@
     <ClCompile Include="Player.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Level-Tuto.c">
+    <ClCompile Include="LevelManager.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="LevelManager.c">
+    <ClCompile Include="Levels\Level0-Tuto.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\Level1-Test.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +50,13 @@
     <ClInclude Include="Player.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Level-Tuto.h">
+    <ClInclude Include="LevelManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="LevelManager.h">
+    <ClInclude Include="Levels\Level0-Tuto.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\Level1-Test.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

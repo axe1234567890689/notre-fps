@@ -99,6 +99,7 @@ struct Object3D {
     unsigned int nbFaces;
     Face* faces;
     sfVector3f pos;
+    float yaw, pitch, roll;
 
     GLuint vao;
     GLuint vbo;
@@ -152,7 +153,9 @@ void updateMesh(Object3D* _object);
 void object3D_init();
 void object3D_render();
 
-sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move);
+char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face);
+
+sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char depth);
 
 Camera* getCam();
 

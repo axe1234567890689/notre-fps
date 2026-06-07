@@ -31,6 +31,6 @@ void playerAction(Entity* _entity, float _dt)
     }
 
     sfVector3f exPos = _entity->pos;
-    _entity->pos = getMouveVecCollid(_entity->pos, speedVec);
+    _entity->pos = getMouveVecCollid(_entity->pos, speedVec, 0);
     if (_entity->pos.y < -1.) _entity->pos.y = -1.;
 }

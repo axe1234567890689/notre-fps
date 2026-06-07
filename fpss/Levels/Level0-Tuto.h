@@ -1,5 +1,5 @@
 #pragma once
-#include "LevelManager.h"
+#include "../LevelManager.h"
 
 typedef struct Tuto_Data {
 	sfTexture* tutoTexture;
