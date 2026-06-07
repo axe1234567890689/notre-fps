@@ -129,6 +129,8 @@ typedef struct Ligth {
     float power;
 } Ligth;
 
+sfVector3f computeNormal(sfVector3f a, sfVector3f b, sfVector3f c);
+
 void readText(FILE* _file, char _link[256]);
 
 void eventCamera(sfEvent* event, sfRenderWindow* window);

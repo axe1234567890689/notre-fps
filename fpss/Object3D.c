@@ -24,6 +24,37 @@ Mat4 proj;
 sfShader* shaderBasic;
 GLuint shaderIDBasic;
 
+sfVector3f computeNormal(sfVector3f a, sfVector3f b, sfVector3f c)
+{
+    sfVector3f ab = {
+        b.x - a.x,
+        b.y - a.y,
+        b.z - a.z
+    };
+
+    sfVector3f ac = {
+        c.x - a.x,
+        c.y - a.y,
+        c.z - a.z
+    };
+
+    sfVector3f n = {
+        ab.y * ac.z - ab.z * ac.y,
+        ab.z * ac.x - ab.x * ac.z,
+        ab.x * ac.y - ab.y * ac.x
+    };
+
+    float len = sqrtf(n.x * n.x + n.y * n.y + n.z * n.z);
+
+    if (len > 0.0f) {
+        n.x /= len;
+        n.y /= len;
+        n.z /= len;
+    }
+
+    return n;
+}
+
 void readText(FILE* _file, char _link[256]) {
     char c = fgetc(_file);
     while (c != '\"') {
@@ -694,7 +725,7 @@ char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face, fl
     if (denominateur >= 0.) return 0;
     sfVector3f posAO = (sfVector3f){ _face->points[0].x - _from.x, _face->points[0].y - _from.y, _face->points[0].z - _from.z };
     float t = DOT(posAO, _face->normal) / denominateur;
-    if (t > 1.) return 1;
+    if (t > 1.) return 0;
 
     return 1;
 }

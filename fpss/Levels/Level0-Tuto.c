@@ -76,8 +76,14 @@ void Tuto_init(Scene* _scene)
     }
 
     for (i = 0; i < LevelFloor->nbVertex; i++) {
-        LevelFloor->mesh[i].pos.y /= 4.5;
+        LevelFloor->mesh[i].pos.y /= 4.;
         LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y;
+    }
+
+    for (i = 0; i < LevelFloor->nbFaces; i += 3) {
+        LevelFloor->mesh[i].norm = computeNormal(LevelFloor->mesh[i].pos, LevelFloor->mesh[i + 1].pos, LevelFloor->mesh[i + 2].pos);
+        LevelFloor->mesh[i + 1].norm = LevelFloor->mesh[i].norm;
+        LevelFloor->mesh[i + 2].norm = LevelFloor->mesh[i].norm;
     }
 
     creatMesh(LevelFloor, 2);
