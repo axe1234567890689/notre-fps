@@ -6,8 +6,6 @@ typedef struct Entity Entity;
 struct Entity {
 	Entity* next;
 	sfVector3f pos;
-	sfVector3f speed;
-	sfVector3f force;
 	sfVector2f dir;
 	void (*action) (Entity* _entity, float _dt);
 	void* data;

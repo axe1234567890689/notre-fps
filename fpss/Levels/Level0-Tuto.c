@@ -50,12 +50,6 @@ void Tuto_init(Scene* _scene)
             LevelFloor->mesh[i + 3].pos = (sfVector3f){ x, max(x, z), z };
             LevelFloor->mesh[i + 4].pos = (sfVector3f){ x, max(x, z + 1.), z + 1. };
             LevelFloor->mesh[i + 5].pos = (sfVector3f){ x + 1., max(x, z) + 1., z + 1. };
-            /*LevelFloor->mesh[i].pos = (sfVector3f){ x, 0., z };
-            LevelFloor->mesh[i + 1].pos = (sfVector3f){ x + 1., 0., z + 1. };
-            LevelFloor->mesh[i + 2].pos = (sfVector3f){ x + 1., 0., z };
-            LevelFloor->mesh[i + 3].pos = (sfVector3f){ x, 0., z };
-            LevelFloor->mesh[i + 4].pos = (sfVector3f){ x, 0., z + 1. };
-            LevelFloor->mesh[i + 5].pos = (sfVector3f){ x + 1., 0., z + 1. };*/
 
             LevelFloor->mesh[i].texPos = (sfVector2f){ 0., 0. };
             LevelFloor->mesh[i + 1].texPos = (sfVector2f){ 1., 1. };
@@ -64,20 +58,13 @@ void Tuto_init(Scene* _scene)
             LevelFloor->mesh[i + 4].texPos = (sfVector2f){ 0., 1. };
             LevelFloor->mesh[i + 5].texPos = (sfVector2f){ 1., 1. };
 
-            LevelFloor->mesh[i].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 1].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 2].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 3].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 4].norm = (sfVector3f){ 0., 1., 0. };
-            LevelFloor->mesh[i + 5].norm = (sfVector3f){ 0., 1., 0. };
-
             i += 6;
         }
     }
 
     for (i = 0; i < LevelFloor->nbVertex; i++) {
         LevelFloor->mesh[i].pos.y /= 4.;
-        LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y;
+        LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y * 0.30;
     }
 
     for (i = 0; i < LevelFloor->nbVertex; i += 3) {
@@ -87,6 +74,88 @@ void Tuto_init(Scene* _scene)
     }
 
     creatMesh(LevelFloor, 1);
+
+    data->LevelWall = creatNewObject(0, 0, 0, 8, GL_TRIANGLES, textureID, shaderIDAT, 0);
+
+    data->LevelWall->mesh[0].pos = (sfVector3f){ 0., 0., 0. };
+    data->LevelWall->mesh[0].texPos = (sfVector2f){ 0., 0. };
+
+    data->LevelWall->mesh[1].pos = (sfVector3f){ 0., 2., nbCarer };
+    data->LevelWall->mesh[1].texPos = (sfVector2f){ 2., nbCarer };
+
+    data->LevelWall->mesh[2].pos = (sfVector3f){ 0., 0., nbCarer };
+    data->LevelWall->mesh[2].texPos = (sfVector2f){ 0., nbCarer };
+
+    data->LevelWall->mesh[3].pos = (sfVector3f){ 0., 0., 0. };
+    data->LevelWall->mesh[3].texPos = (sfVector2f){ 0., 0. };
+
+    data->LevelWall->mesh[4].pos = (sfVector3f){ 0., 2., 0. };
+    data->LevelWall->mesh[4].texPos = (sfVector2f){ 2., 0. };
+
+    data->LevelWall->mesh[5].pos = (sfVector3f){ 0., 2., nbCarer };
+    data->LevelWall->mesh[5].texPos = (sfVector2f){ 2., nbCarer };
+
+    data->LevelWall->mesh[6].pos = (sfVector3f){ 0., 0., 0. };
+    data->LevelWall->mesh[6].texPos = (sfVector2f){ 0., nbCarer };
+
+    data->LevelWall->mesh[7].pos = (sfVector3f){ nbCarer, 0., 0. };
+    data->LevelWall->mesh[7].texPos = (sfVector2f){ 0., 0. };
+
+    data->LevelWall->mesh[8].pos = (sfVector3f){ nbCarer, 2., 0. };
+    data->LevelWall->mesh[8].texPos = (sfVector2f){ 2., 0. };
+
+    data->LevelWall->mesh[9].pos = (sfVector3f){ 0., 0., 0. };
+    data->LevelWall->mesh[9].texPos = (sfVector2f){ 0., nbCarer };
+
+    data->LevelWall->mesh[10].pos = (sfVector3f){ nbCarer, 2., 0. };
+    data->LevelWall->mesh[10].texPos = (sfVector2f){ 2., 0. };
+
+    data->LevelWall->mesh[11].pos = (sfVector3f){ 0., 2., 0. };
+    data->LevelWall->mesh[11].texPos = (sfVector2f){ 2., nbCarer };
+
+    data->LevelWall->mesh[12].pos = (sfVector3f){ nbCarer, 0., nbCarer };
+    data->LevelWall->mesh[12].texPos = (sfVector2f){ 0., 0. };
+
+    data->LevelWall->mesh[13].pos = (sfVector3f){ 0., 0., nbCarer };
+    data->LevelWall->mesh[13].texPos = (sfVector2f){ 0., nbCarer };
+
+    data->LevelWall->mesh[14].pos = (sfVector3f){ 0., 2., nbCarer };
+    data->LevelWall->mesh[14].texPos = (sfVector2f){ 2., nbCarer };
+
+    data->LevelWall->mesh[15].pos = (sfVector3f){ nbCarer, 0., nbCarer };
+    data->LevelWall->mesh[15].texPos = (sfVector2f){ 0., 0. };
+
+    data->LevelWall->mesh[16].pos = (sfVector3f){ 0., 2., nbCarer };
+    data->LevelWall->mesh[16].texPos = (sfVector2f){ 2., nbCarer };
+
+    data->LevelWall->mesh[17].pos = (sfVector3f){ nbCarer, 2., nbCarer };
+    data->LevelWall->mesh[17].texPos = (sfVector2f){ 2., 0. };
+
+    data->LevelWall->mesh[18].pos = (sfVector3f){ nbCarer, 0., nbCarer };
+    data->LevelWall->mesh[18].texPos = (sfVector2f){ 0., nbCarer };
+
+    data->LevelWall->mesh[19].pos = (sfVector3f){ nbCarer, 2., 0. };
+    data->LevelWall->mesh[19].texPos = (sfVector2f){ 2., 0. };
+
+    data->LevelWall->mesh[20].pos = (sfVector3f){ nbCarer, 0., 0. };
+    data->LevelWall->mesh[20].texPos = (sfVector2f){ 0., 0. };
+
+    data->LevelWall->mesh[21].pos = (sfVector3f){ nbCarer, 0., nbCarer };
+    data->LevelWall->mesh[21].texPos = (sfVector2f){ 0., nbCarer };
+
+    data->LevelWall->mesh[22].pos = (sfVector3f){ nbCarer, 2., nbCarer };
+    data->LevelWall->mesh[22].texPos = (sfVector2f){ 2., nbCarer };
+
+    data->LevelWall->mesh[23].pos = (sfVector3f){ nbCarer, 2., 0. };
+    data->LevelWall->mesh[23].texPos = (sfVector2f){ 2., 0. };
+
+    for (i = 0; i < data->LevelWall->nbVertex; i += 3) {
+        data->LevelWall->mesh[i].norm = computeNormal(data->LevelWall->mesh[i].pos, data->LevelWall->mesh[i + 1].pos, data->LevelWall->mesh[i + 2].pos);
+        data->LevelWall->mesh[i + 1].norm = data->LevelWall->mesh[i].norm;
+        data->LevelWall->mesh[i + 2].norm = data->LevelWall->mesh[i].norm;
+    }
+
+    creatMesh(data->LevelWall, 1);
 
     data->LevelDoor = creatNewObject(0, 0, 0, 6, GL_TRIANGLES, textureID, shaderIDAT, 0);
 
@@ -139,6 +208,12 @@ void Tuto_init(Scene* _scene)
     data->LevelDoor->mesh[11].texPos = (sfVector2f){ 0., 2. };
 
     data->LevelDoor->pos = (sfVector3f) { 5., 4.94, 10.5 };
+
+    for (i = 0; i < data->LevelDoor->nbVertex; i += 3) {
+        data->LevelDoor->mesh[i].norm = computeNormal(data->LevelDoor->mesh[i].pos, data->LevelDoor->mesh[i + 1].pos, data->LevelDoor->mesh[i + 2].pos);
+        data->LevelDoor->mesh[i + 1].norm = data->LevelDoor->mesh[i].norm;
+        data->LevelDoor->mesh[i + 2].norm = data->LevelDoor->mesh[i].norm;
+    }
 
     creatMesh(data->LevelDoor, 1);
 

@@ -5,6 +5,7 @@ typedef struct Tuto_Data {
 	sfTexture* tutoTexture;
 	sfShader* shaderAT;
 	Object3D* LevelFloor;
+	Object3D* LevelWall;
 	Object3D* LevelDoor;
 
 	char transi;
