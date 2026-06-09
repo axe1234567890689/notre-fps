@@ -731,7 +731,8 @@ char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face, fl
     if (denominateur >= 0.) return 0;
     sfVector3f posAO = (sfVector3f){ _face->points[0].x - _from.x, _face->points[0].y - _from.y, _face->points[0].z - _from.z };
     *_t = DOT(posAO, _face->normal) / denominateur;
-    return (*_t <= 1.);
+    if (*_t >= 1.) return 0;
+    return 1;
 }
 
 sfVector3f mulV3f(sfVector3f _v1, float _multi) {
