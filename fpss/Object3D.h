@@ -155,9 +155,9 @@ void updateMesh(Object3D* _object);
 void object3D_init();
 void object3D_render();
 
-char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face);
+char segmentCollision(sfVector3f _from, sfVector3f _move, CollideFace* _face, float* _t);
 
-sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char depth);
+sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, float _floorAngle, unsigned char* _touchFloor, unsigned char depth);
 
 Camera* getCam();
 

@@ -7,6 +7,7 @@ struct Entity {
 	Entity* next;
 	sfVector3f pos;
 	sfVector2f dir;
+	unsigned char touchFloor;
 	void (*action) (Entity* _entity, float _dt);
 	void* data;
 };

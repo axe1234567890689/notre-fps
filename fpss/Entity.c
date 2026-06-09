@@ -24,5 +24,5 @@ void updateAllEntity(float _dt)
 
 void moveEntity(Entity* _entity, sfVector3f _mouve)
 {
-	getMouveVecCollid(_entity->pos, addVec3(_entity->pos, _mouve), 0);
+	getMouveVecCollid(_entity->pos, addVec3(_entity->pos, _mouve), 1., NULL, 0);
 }

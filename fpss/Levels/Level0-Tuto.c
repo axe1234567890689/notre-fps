@@ -64,7 +64,7 @@ void Tuto_init(Scene* _scene)
 
     for (i = 0; i < LevelFloor->nbVertex; i++) {
         LevelFloor->mesh[i].pos.y /= 4.;
-        LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y * 0.30;
+        LevelFloor->mesh[i].pos.y *= LevelFloor->mesh[i].pos.y;
     }
 
     for (i = 0; i < LevelFloor->nbVertex; i += 3) {

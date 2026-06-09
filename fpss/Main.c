@@ -56,7 +56,7 @@ int main(void)
 
         Camera* cam = getCam();
         cam->x = player->pos.x;
-        cam->y = player->pos.y + 1.90;
+        cam->y = player->pos.y + 1.80;
         cam->z = player->pos.z;
         player->dir.x = cam->pitch;
         player->dir.y = cam->yaw;

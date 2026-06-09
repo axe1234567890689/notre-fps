@@ -3,9 +3,9 @@
 
 void playerAction(Entity* _entity, float _dt)
 {
-    float speed = 500.f * _dt;
+    float speed = 5000. * _dt;
 
-    sfVector3f speedVec = { 0., -9.31, 0. };
+    sfVector3f speedVec = { 0., -9310. * _dt, 0. };
 
     if (sfKeyboard_isScancodePressed(sfScanW)) {
         speedVec.z -= speed * cosf(_entity->dir.y * DEG_TO_RAD);
@@ -23,11 +23,15 @@ void playerAction(Entity* _entity, float _dt)
         speedVec.z -= speed * sinf(_entity->dir.y * DEG_TO_RAD);
         speedVec.x += speed * cosf(_entity->dir.y * DEG_TO_RAD);
     }
+    if (sfKeyboard_isScancodePressed(sfScanSpace) && _entity->touchFloor) {
+        speedVec.y += 10000.;
+    }
     
     float damping = 1.f / (1.f + 0.95 * _dt);
 
     speedVec = mulV3f(speedVec, _dt);
 
     sfVector3f exPos = _entity->pos;
-    _entity->pos = getMouveVecCollid(_entity->pos, speedVec, 0);
+    _entity->touchFloor = 0;
+    _entity->pos = getMouveVecCollid(_entity->pos, speedVec, 0.7, &_entity->touchFloor, 0);
 }

@@ -746,7 +746,7 @@ sfVector3f lerpV3f(sfVector3f _v1, sfVector3f _v2, float t) {
     return (sfVector3f) { lerp(_v1.x, _v2.x, t), lerp(_v1.y, _v2.y, t), lerp(_v1.z, _v2.z, t)};
 }
 
-sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char depth)
+sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, float _floorAngle, unsigned char* _touchFloor, unsigned char depth)
 {
     if (depth == 5) return _from;
 
@@ -764,6 +764,7 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char d
                 for (int i = 0; i < colliderTouch->nbFace; i++) {
                     if (vecInBoundingBox(_from, to, &colliderTouch->faces[i].box)) {
                         if (segmentCollision(_from, _move, &colliderTouch->faces[i], &t)) {
+                            t -= 0.0001;
                             if (closestT > t) {
                                 faceTouch = &colliderTouch->faces[i];
                                 closestT = t;
@@ -792,7 +793,9 @@ sfVector3f getMouveVecCollid(sfVector3f _from, sfVector3f _move, unsigned char d
         sfVector3f perpendicular = mulV3f(faceTouch->normal, DOT(_move, faceTouch->normal));
         _newMove = subVec3(_newMove, perpendicular);
 
-        return getMouveVecCollid(_newFrom, _newMove, depth + 1);
+        if (faceTouch->normal.y > _floorAngle && _touchFloor != NULL) *_touchFloor = 1;
+
+        return getMouveVecCollid(_newFrom, _newMove, 10., NULL, depth + 1);
     }
 
     return addVec3(_from, _move);
